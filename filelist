@@ -1,6 +1,0 @@
-/etc/php/7.3/fpm/pool.d/www.conf
-/root/autoclean.sh
-/etc/ssmtp/ssmtp.conf.template
-/start.sh
-/cronfile.final
-/cronfile.system
