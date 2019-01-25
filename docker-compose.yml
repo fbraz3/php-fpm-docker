@@ -1,0 +1,12 @@
+version: '2'
+services:
+ php-fpm:
+  image: fbraz3/php-fpm
+  volumes:
+   - /my/app/root/:/app
+  ports:
+    - "127.0.0.1:1780:1780"
+  extra_hosts:
+      - "mysql:192.168.0.1"
+      - "mail:192.168.0.1"
+  restart: always
