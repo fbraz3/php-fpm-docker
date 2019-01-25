@@ -1,5 +1,7 @@
 #!/bin/bash
 
+$(which chmod) 700 /etc/monit/monitrc
+
 #CLEAN
 /root/autoclean.sh
 
