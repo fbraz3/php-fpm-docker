@@ -2,10 +2,10 @@
 
 $(which chmod) 700 /etc/monit/monitrc
 
-#CLEAN
+#CLEAR TMP FILES
 /root/autoclean.sh
 
-#CRON
+#ADD CRON
 CRONFILE="/cronfile.final"
 SYSTEMCRON="/cronfile.system"
 USERCRON="/cronfile"
@@ -19,8 +19,16 @@ if [ -f "$USERCRON" ]; then
 fi
 /usr/bin/crontab $CRONFILE
 
-#ENV
-PHPVERSION=`php -v|grep --only-matching --perl-regexp "7\.\\d+" |head -n1`
+#DECLARE/SET VARIABLES
+PHPVERSION=`cat /PHP_VERSION 2>/dev/null`
+if [ -z "$PHPVERSION" ]; then
+    PHPVERSION=`php -v|grep --only-matching --perl-regexp "7\.\\d+" |head -n1`
+fi
+
+if [ -z "$PHPVERSION" ]; then
+    PHPVERSION='7.3'
+fi
+
 echo > /etc/php/$PHPVERSION/fpm/env.conf
 for i in `/usr/bin/env`; do
     PARAM=`echo $i |cut -d"=" -f1`
@@ -28,13 +36,20 @@ for i in `/usr/bin/env`; do
     echo "env[$PARAM]=\"$VAL\"" >> /etc/php/$PHPVERSION/fpm/env.conf
 done
 
+#PUPULATE TEMPLATES
 cp -f /etc/ssmtp/ssmtp.conf.template /etc/ssmtp/ssmtp.conf
-sed -i 's/MY_HOSTNAME/'`/bin/hostname`'/g' /etc/ssmtp/ssmtp.conf
+sed -i 's/%MY_HOSTNAME%/'`/bin/hostname`'/g' /etc/ssmtp/ssmtp.conf
 
-#SERVICOS
+$(which sed) -i 's/%PHP_VERSION%/'$PHPVERSION'/g' /etc/monit/conf-enabled/php-fpm
+$(which sed) -i 's/%PHP_VERSION%/'$PHPVERSION'/g' /etc/php/$PHPVERSION/fpm/pool.d/www.conf
+$(which sed) -i 's/%PHP_VERSION%/'$PHPVERSION'/g' /etc/php/$PHPVERSION/fpm/php-fpm.conf
+
+
+#START SERVICES
 /usr/sbin/service cron restart
-/usr/sbin/service php7.3-fpm restart
+/usr/sbin/service php$PHPVERSION-fpm restart
 sleep 1
 /usr/sbin/service monit start
 
-/usr/bin/tail -f /var/log/php7.3-fpm.log
+#KEEP CONTAINER ALIVE
+/usr/bin/tail -f /var/log/php$PHPVERSION-fpm.log

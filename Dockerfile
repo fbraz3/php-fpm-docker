@@ -1,9 +1,11 @@
 FROM ubuntu:18.04
 
 COPY ./scripts/autoclean.sh /root/
-COPY ./scripts/docker-entrypoint.sh ./misc/cronfile.final ./misc/cronfile.system /
+COPY ./scripts/docker-entrypoint.sh ./misc/cronfile.final ./misc/cronfile.system ./PHP_VERSION /
 
-RUN chmod +x /root/autoclean.sh; \
+RUN PHP_VERSION=`cat /PHP_VERSION`; \
+if [ -z "$PHP_VERSION" ]; then PHP_VERSION="7.3"; fi; \
+chmod +x /root/autoclean.sh; \
 chmod +x /docker-entrypoint.sh; \
 mkdir /app; \
 mkdir /run/php/; \
@@ -11,12 +13,13 @@ apt-get update; \
 apt-get install -y software-properties-common apt-transport-https cron vim ssmtp monit; \
 add-apt-repository -y ppa:ondrej/php; \
 export DEBIAN_FRONTEND=noninteractive; \
-apt-get install -yq php7.3 php7.3-cli php7.3-common php7.3-curl php7.3-fpm php7.3-json php7.3-mysql php7.3-opcache php7.3-readline php7.3-xml php7.3-xsl php7.3-gd php7.3-intl php7.3-bz2 php7.3-bcmath php7.3-imap php7.3-gd php7.3-mbstring php7.3-pgsql php7.3-sqlite3 php7.3-xmlrpc php7.3-zip  php7.3-odbc php7.3-snmp php7.3-interbase php7.3-ldap php7.3-tidy php-tcpdf
+apt-get install -yq php$PHP_VERSION php$PHP_VERSION-cli php$PHP_VERSION-common php$PHP_VERSION-curl php$PHP_VERSION-fpm php$PHP_VERSION-json php$PHP_VERSION-mysql php$PHP_VERSION-opcache php$PHP_VERSION-readline php$PHP_VERSION-xml php$PHP_VERSION-xsl php$PHP_VERSION-gd php$PHP_VERSION-intl php$PHP_VERSION-bz2 php$PHP_VERSION-bcmath php$PHP_VERSION-imap php$PHP_VERSION-gd php$PHP_VERSION-mbstring php$PHP_VERSION-pgsql php$PHP_VERSION-sqlite3 php$PHP_VERSION-xmlrpc php$PHP_VERSION-zip  php$PHP_VERSION-odbc php$PHP_VERSION-snmp php$PHP_VERSION-interbase php$PHP_VERSION-ldap php$PHP_VERSION-tidy php-tcpdf;
 
 
 COPY ./conf/ssmtp.conf.template /etc/ssmtp/
-COPY ./monit/monitrc ./monit/cron /etc/monit/
-COPY ./php/www.conf /etc/php/7.3/fpm/pool.d/
-COPY ./php/php-fpm.conf ./php/php.ini ./conf/env.conf /etc/php/7.3/fpm/
+COPY ./monit/monitrc /etc/monit/
+COPY ./monit/cron ./monit/php-fpm /etc/monit/conf-enabled/
+COPY ./php/www.conf /etc/php/$PHP_VERSION/fpm/pool.d/
+COPY ./php/php-fpm.conf ./php/php.ini ./conf/env.conf /etc/php/$PHP_VERSION/fpm/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
