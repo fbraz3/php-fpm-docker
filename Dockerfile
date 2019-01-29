@@ -6,6 +6,7 @@ COPY ./scripts/autoclean.sh /root/
 COPY ./scripts/docker-entrypoint.sh ./misc/cronfile.final ./misc/cronfile.system /
 
 RUN if [ -z "$PHP_VERSION" ]; then PHP_VERSION="7.3"; fi; \
+echo $PHP_VERSION > /PHP_VERSION; \
 chmod +x /root/autoclean.sh; \
 chmod +x /docker-entrypoint.sh; \
 mkdir /app; \

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "CUSTOM BUILD!!!"
-env
-echo
-echo pwd: `pwd`
+echo "-----------------------------------------------------"
+echo "RUNNING CUSTOM BUILD"
+echo cmdline: docker build --build-arg PHP_VERSION=${DOCKER_TAG} -f $DOCKERFILE_PATH -t $IMAGE_NAME .
+echo "-----------------------------------------------------"
 
-docker build --build-arg PHP_VERSION=`cat ./PHP_VERSION` -f $DOCKERFILE_PATH -t $IMAGE_NAME .
+docker build --build-arg PHP_VERSION=${DOCKER_TAG} -f $DOCKERFILE_PATH -t $IMAGE_NAME .
