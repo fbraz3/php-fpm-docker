@@ -6,8 +6,8 @@ A multi-version php-fpm images listening on TCP port to easy integrate on webser
  - *Multi Version:* All supported PHP versions available
  - *Fast!* Don't comes with a builtin webserver, so less overhead and better response times! =D
  - *Up-to-Date:* Images auto-updated every week
- - *Secure:* Cron job auto installed into containers to auto update security packages every night;
- - *Green light to send emails:* PHP mail() function working like a charm
+ - *Secure:* Cron job auto installed into containers to apply security updates every night;
+ - *Green light to send emails:* PHP mail() working like a charm
 
 ## Ready-to-go images
 Chek out on [Docker Hub](https://hub.docker.com/r/fbraz3/php-fpm/)
