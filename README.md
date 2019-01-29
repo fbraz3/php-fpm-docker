@@ -4,7 +4,7 @@ A multi-version php-fpm images listening on TCP port to easy integrate on webser
 
 ## Features
  - *Multi Version:* All supported PHP versions available
- - *Fast!* Don't comes with a builtin webserver, so less overhead and better response times! =D
+ - *Fast!* does not come with a builtin webserver, so less overhead and better response times! =D
  - *Up-to-Date:* Images auto-updated every week
  - *Secure:* Cron job auto installed into containers to apply security updates every night;
  - *Green light to send emails:* PHP mail() working like a charm
