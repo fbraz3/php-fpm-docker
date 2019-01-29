@@ -1,10 +1,11 @@
 FROM ubuntu:18.04
 
-COPY ./scripts/autoclean.sh /root/
-COPY ./scripts/docker-entrypoint.sh ./misc/cronfile.final ./misc/cronfile.system ./PHP_VERSION /
+ENV PHP_VERSION=${PHP_VERSION}
 
-RUN PHP_VERSION=`cat /PHP_VERSION`; \
-if [ -z "$PHP_VERSION" ]; then PHP_VERSION="7.3"; fi; \
+COPY ./scripts/autoclean.sh /root/
+COPY ./scripts/docker-entrypoint.sh ./misc/cronfile.final ./misc/cronfile.system /
+
+RUN if [ -z "$PHP_VERSION" ]; then PHP_VERSION="7.3"; fi; \
 chmod +x /root/autoclean.sh; \
 chmod +x /docker-entrypoint.sh; \
 mkdir /app; \

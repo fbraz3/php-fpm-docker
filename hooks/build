@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "CUSTOM BUILD!!!"
+env
+echo
+echo pwd: `pwd`
+
+docker build --build-arg PHP_VERSION=`cat ./PHP_VERSION` -f $DOCKERFILE_PATH -t $IMAGE_NAME .
