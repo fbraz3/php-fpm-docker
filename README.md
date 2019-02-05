@@ -7,10 +7,13 @@ A multi-version php-fpm images listening on TCP port to easy integrate on webser
  - *Fast!* does not come with a builtin webserver, so less overhead and better response times! =D
  - *Up-to-Date:* Images auto-updated every week
  - *Secure:* Cron job auto installed into containers to apply security updates every night;
- - *Green light to send emails:* PHP mail() working like a charm
+ - *Green light to send emails:* PHP mail() working like a charm;
+ - *Schedule jobs:* cron command installed;
 
 ## Ready-to-go images
-Chek out on [Docker Hub](https://hub.docker.com/r/fbraz3/php-fpm/)
+Check out on [Docker Hub](https://hub.docker.com/r/fbraz3/php-fpm/)
+
+Source code on [GitHub](https://github.com/fbraz3/php-fpm-docker)
 
 ## Getting started
 
@@ -35,7 +38,7 @@ services:
  php-fpm:
   image: fbraz3/php-fpm:7.3
   volumes:
-   - /my/app/root/:/app
+   - /my/app/root/:/app   
   ports:
     - "127.0.0.1:1780:1780"
   extra_hosts:  
@@ -46,7 +49,7 @@ networks:
    external: true
 ```
 
-**Note**: Dont forget to replace `/my/app/root/` to your real app root!
+**Note**: Dont forget to replace `/my/app/root/` to your real app root! 
 
 ## Configuring nginx
 We need to set fastcgi server to `tcp port 1780` like below
@@ -58,4 +61,17 @@ location ~ \.php$ {
         fastcgi_param        DOCUMENT_ROOT    /app/public;
         fastcgi_param        SCRIPT_FILENAME  /app/public$fastcgi_script_name;
     }
+```
+
+#Cronjob
+System reads `/cronjob` file and installs using `cron`.
+
+To use it just add your commands to a single file and bind it to `/dockerfile` as follows.
+
+```
+  [...]
+     volumes:
+        - /my/app/root/:/app
+        - /my/dockerfile:dockerfile
+  [...]
 ```
