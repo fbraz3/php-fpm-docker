@@ -63,15 +63,16 @@ location ~ \.php$ {
     }
 ```
 
-#Cronjob
-System reads `/cronjob` file and installs using `cron`.
+## Cronjob
 
-To use it just add your commands to a single file and bind it to `/dockerfile` as follows.
+System reads `/cronfile` file and installs using `cron`.
+
+To use it just add your commands to a single file and bind it to `/cronfile` as follows.
 
 ```
   [...]
      volumes:
         - /my/app/root/:/app
-        - /my/dockerfile:dockerfile
+        - /my/cronfile:/cronfile
   [...]
 ```
