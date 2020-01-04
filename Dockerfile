@@ -17,6 +17,7 @@ RUN apt-get install -y software-properties-common apt-transport-https \
 cron vim ssmtp monit wget unzip curl less git; \
 /usr/bin/unattended-upgrades -v;
 
+#php-base
 RUN add-apt-repository -y ppa:ondrej/php; \
 export DEBIAN_FRONTEND=noninteractive; \
 apt-get install -yq php$PHP_VERSION php$PHP_VERSION-cli \
@@ -29,14 +30,21 @@ php$PHP_VERSION-xmlrpc php$PHP_VERSION-zip php$PHP_VERSION-odbc php$PHP_VERSION-
 php$PHP_VERSION-interbase php$PHP_VERSION-ldap php$PHP_VERSION-tidy \
 php$PHP_VERSION-memcached php-tcpdf php-redis php-imagick php-mongodb;
 
-RUN if [ $PHP_VERSION \> 7 ] && [ $PHP_VERSION \< 7.4 ]; then \
+#php-phalcon
+RUN if [ $PHP_VERSION \> 7 ]; then \
     echo 'deb https://packagecloud.io/phalcon/stable/ubuntu/ bionic main' > /etc/apt/sources.list.d/phalcon_stable.list; \
     echo 'deb-src https://packagecloud.io/phalcon/stable/ubuntu/ bionic main' >> /etc/apt/sources.list.d/phalcon_stable.list; \
     wget -qO- 'https://packagecloud.io/phalcon/stable/gpgkey' | apt-key add -; \
     apt-get update; \
-    apt-get install php$PHP_VERSION-phalcon; \
+    if [ $PHP_VERSION \< 7.4 ]; then \
+        apt-get install -yq php$PHP_VERSION-phalcon=$PHALCON_VERSION+php$PHP_VERSION; \
+    fi; \
+    if [ $PHP_VERSION \> 7.3 ]; then \
+        apt-get install -yq php$PHP_VERSION-phalcon php-psr; \
+    fi;
 fi;
 
+#wp-cli
 RUN mkdir /opt/wp-cli && \
 cd /opt/wp-cli && ( \
     wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
@@ -44,16 +52,13 @@ cd /opt/wp-cli && ( \
     ln -s /opt/wp-cli/wp-cli.phar /usr/local/bin/wp; \
 )
 
-RUN mkdir /opt/composer && \
+#let`s compose!
+RUN mkdir /opt/composer; \
 cd /opt/composer && ( \
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"; \
-    php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"; \
-    php composer-setup.php; \
-    php -r "unlink('composer-setup.php');"; \
-    chmod +x composer.phar; \
-    ln -s /opt/composer/composer.phar /usr/local/bin/composer \
+    wget https://raw.githubusercontent.com/composer/getcomposer.org/master/web/installer -O - -q | php -- --quiet; \
 )
 
+#phalcon devtools
 RUN cd /opt && ( \
     git clone https://github.com/phalcon/phalcon-devtools.git; \
     cd phalcon-devtools; \
