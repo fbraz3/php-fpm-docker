@@ -35,7 +35,7 @@ if  [[ ! -z "$DATA_UID" ]] && [[ $DATA_UID =~ ^[0-9]+$ ]] ; then
 fi
 
 # SET GUID FOR www-data USER
-if  [[ ! -z "$DATA_UID" ]] && [[ $DATA_UID =~ ^[0-9]+$ ]] ; then
+if  [[ ! -z "$DATA_GUID" ]] && [[ $DATA_GUID =~ ^[0-9]+$ ]] ; then
 	$(which groupmod) -g $DATA_GUID www-data;
 fi
 
