@@ -61,8 +61,8 @@ $(which sed) -i 's/%PHP_VERSION%/'$PHPVERSION'/g' /etc/php/$PHPVERSION/fpm/php-f
 # POPULATE VARIABLES
 echo > /etc/php/$PHPVERSION/fpm/env.conf
 echo > /etc/php/$PHPVERSION/fpm/overrides.conf
-echo > /etc/php/$PHPVERSION/fpm/pool.d/overrides.conf
-echo > /etc/php/$PHPVERSION/fpm/pool.d/phpconf.conf
+echo > /etc/php/$PHPVERSION/fpm/pool-overrides.conf
+echo > /etc/php/$PHPVERSION/fpm/phpconf.conf
 for i in `/usr/bin/env`; do
     PARAM=`echo $i |cut -d"=" -f1`
     VAL=`echo $i |cut -d"=" -f2`
@@ -74,12 +74,12 @@ for i in `/usr/bin/env`; do
     if [[ $PARAM =~ ^PHPADMIN_.+ ]]; then
         PHPPARAM=`echo $PARAM |sed 's/PHPADMIN_//g' | awk '{print tolower($0)}'`
         echo "PHPADMIN   :: $PHPPARAM => $VAL"
-        echo "php_admin_value[$PHPPARAM] =\"$VAL\"" >> /etc/php/$PHPVERSION/fpm/pool.d/phpconf.conf
+        echo "php_admin_value[$PHPPARAM] =\"$VAL\"" >> /etc/php/$PHPVERSION/fpm/phpconf.conf
 
     elif [[ $PARAM =~ ^PHPFLAG_.+ ]]; then
         PHPPARAM=`echo $PARAM |sed 's/PHPFLAG_//g' | awk '{print tolower($0)}'`
         echo "PHPFLAG    :: $PHPPARAM => $VAL"
-        echo "php_flag[$PHPPARAM]=\"$VAL\"" >> /etc/php/$PHPVERSION/fpm/pool.d/phpconf.conf
+        echo "php_flag[$PHPPARAM]=\"$VAL\"" >> /etc/php/$PHPVERSION/fpm/phpconf.conf
 
     elif [[ $PARAM =~ ^FPMCONFIG_.+ ]]; then
         FPMPARAM=`echo $PARAM |sed 's/FPMCONFIG_//g' | sed 's/__/./g' | awk '{print tolower($0)}'`
@@ -89,7 +89,7 @@ for i in `/usr/bin/env`; do
     elif [[ $PARAM =~ ^POOLCONFIG_.+ ]]; then
         FPMPARAM=`echo $PARAM |sed 's/POOLCONFIG_//g' | sed 's/__/./g' | awk '{print tolower($0)}'`
         echo "POOLCONFIG :: $FPMPARAM => $VAL"
-        echo "$FPMPARAM = $VAL" >> /etc/php/$PHPVERSION/fpm/pool.d/overrides.conf
+        echo "$FPMPARAM = $VAL" >> /etc/php/$PHPVERSION/fpm/pool-overrides.conf
 
     elif [[ $PARAM =~ ^[a-zA-Z0-9_]+$ ]]; then
         echo "ENV :: $PARAM => $VAL"
