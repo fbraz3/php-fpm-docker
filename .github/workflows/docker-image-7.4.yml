@@ -3,7 +3,7 @@ name: Build Docker Image - PHP 7.4
 on: 
   workflow_dispatch:
   schedule:
-    - cron: '30 6 * * 3'
+    - cron: '30 6 * * 5'
 
 jobs:
   docker:
@@ -33,4 +33,4 @@ jobs:
           build-args: |
             PHP_VERSION=7.4
           tags: |
-            fbraz3/lnmp:7.4
+            fbraz3/php-fpm:7.4
