@@ -40,10 +40,10 @@ RUN if [ $PHP_VERSION \> 7 ]; then \
         wget -qO- 'https://packagecloud.io/phalcon/stable/gpgkey' | apt-key add -; \
         apt-get update; \
         if [ $PHP_VERSION \< 7.4 ]; then \
-            apt-get install -yq php$PHP_VERSION-phalcon=$PHALCON_VERSION+php$PHP_VERSION; \
+            apt-get install -fyq php$PHP_VERSION-phalcon=$PHALCON_VERSION+php$PHP_VERSION; \
         fi; \
         if [ $PHP_VERSION \> 7.3 ] && [ $PHP_VERSION \< 8 ]; then \
-            apt-get install -yq php$PHP_VERSION-phalcon php-psr; \
+            apt-get install -fyq php$PHP_VERSION-phalcon php-psr; \
         fi; \
     fi;
 
