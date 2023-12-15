@@ -1,9 +1,9 @@
-name: Build Docker Image - PHP 8.2
+name: Build Docker Image - PHP 8.3
 
 on: 
   workflow_dispatch:
   schedule:
-    - cron: '15 6 * * 5'
+    - cron: '10 6 * * 5'
 
 jobs:
   docker:
@@ -31,6 +31,7 @@ jobs:
           context: .
           push: true
           build-args: |
-            PHP_VERSION=8.2
+            PHP_VERSION=8.3
           tags: |
-            fbraz3/php-fpm:8.2
+            fbraz3/php-fpm:latest
+            fbraz3/php-fpm:8.3
