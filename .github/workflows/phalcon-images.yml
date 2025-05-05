@@ -51,7 +51,7 @@ jobs:
         with:
           platforms: linux/amd64
           context: .
-          file: flavors/phalcon/Dockerfile
+          file: flavors/vanilla/Dockerfile
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -83,7 +83,7 @@ jobs:
         with:
           platforms: linux/arm64
           context: .
-          file: flavors/phalcon/Dockerfile
+          file: flavors/vanilla/Dockerfile
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -122,7 +122,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           context: .
-          file: flavors/phalcon/Dockerfile
+          file: flavors/vanilla/Dockerfile
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
