@@ -46,12 +46,18 @@ jobs:
           tags: |
             fbraz3/php-fpm:${{ matrix.php_version }}-amd64
 
-#      - name: Test images - amd64
-#        run: |
-#          docker run --rm --platform=linux/amd64 fbraz3/php-fpm:${{ matrix.php_version }}-amd64 -v
-#          docker run --rm --platform=linux/amd64 fbraz3/php-fpm:${{ matrix.php_version }}-amd64 -v | grep -q "${{ matrix.php_version }}" || exit 1
-#        env:
-#          PHP_VERSION: ${{ matrix.php_version }}
+      - name: Test images - amd64
+        run: |
+          docker run --platform=linux/amd64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-amd64
+          sleep 35
+          docker exec -it test ps faux |grep -q cron || exit 1
+          docker exec -it test ps faux |grep -q monit || exit 1
+          docker exec -it test ps faux |grep -q "php-fpm: master" || exit 1
+          nc -v 127.0.0.1 1780 || exit 1
+          docker exec -it test monit summary || exit 1
+          docker exec -it test crontab -l || exit 1
+        env:
+          PHP_VERSION: ${{ matrix.php_version }}
 
       # BUILD ARM64 IMAGE
       - name: Build PHP Base Image - arm64
@@ -68,12 +74,18 @@ jobs:
           tags: |
             fbraz3/php-fpm:${{ matrix.php_version }}-arm64
 
-#      - name: Test images - arm64
-#        run: |
-#          docker run --rm --platform=linux/arm64 fbraz3/php-fpm:${{ matrix.php_version }}-arm64 -v
-#          docker run --rm --platform=linux/arm64 fbraz3/php-fpm:${{ matrix.php_version }}-arm64 -v | grep -q "${{ matrix.php_version }}" || exit 1
-#        env:
-#          PHP_VERSION: ${{ matrix.php_version }}
+      - name: Test images - arm64
+        run: |
+          docker run --platform=linux/arm64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-arm64
+          sleep 35
+          docker exec -it test ps faux |grep -q cron || exit 1
+          docker exec -it test ps faux |grep -q monit || exit 1
+          docker exec -it test ps faux |grep -q "php-fpm: master" || exit 1
+          nc -v 127.0.0.1 1780 || exit 1
+          docker exec -it test monit summary || exit 1
+          docker exec -it test crontab -l || exit 1
+        env:
+          PHP_VERSION: ${{ matrix.php_version }}
 
       # BUILD AND PUSH MULTI-ARCH IMAGE
       # Github Actions cache is used to speed up the build process and ensure that the tests are run on the latest image
