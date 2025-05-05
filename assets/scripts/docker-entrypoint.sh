@@ -1,9 +1,13 @@
 #!/bin/bash
 
-$(which chmod) 700 /etc/monit/monitrc
+echo
+echo "-----------------------------------------------------------"
+echo "If you enjoy using this image, please consider donating."
+echo "https://github.com/sponsors/fbraz3"
+echo "-----------------------------------------------------------"
+echo
 
-# CLEAR TMP FILES
-/root/autoclean.sh
+$(which chmod) 700 /etc/monit/monitrc
 
 # ADD CRON
 CRONFILE="/cronfile.final"
@@ -51,9 +55,6 @@ if [ -f "/etc/php/fpm/pool.d/www.conf" ]; then
 fi
 
 # PUPULATE TEMPLATES
-cp -f /etc/ssmtp/ssmtp.conf.template /etc/ssmtp/ssmtp.conf
-sed -i 's/%MY_HOSTNAME%/'`/bin/hostname`'/g' /etc/ssmtp/ssmtp.conf
-
 $(which sed) -i 's/%PHP_VERSION%/'$PHPVERSION'/g' /etc/monit/conf-enabled/php-fpm
 $(which sed) -i 's/%PHP_VERSION%/'$PHPVERSION'/g' /etc/php/$PHPVERSION/fpm/pool.d/www.conf
 $(which sed) -i 's/%PHP_VERSION%/'$PHPVERSION'/g' /etc/php/$PHPVERSION/fpm/php-fpm.conf
@@ -98,10 +99,7 @@ for i in `/usr/bin/env`; do
 done
 
 # START SERVICES
-/usr/sbin/service cron restart
-/usr/sbin/service php$PHPVERSION-fpm restart
+/usr/sbin/service cron start
+/usr/sbin/service php$PHPVERSION-fpm start
 sleep 1
 /usr/sbin/service monit start
-
-# KEEP CONTAINER ALIVE
-/usr/bin/tail -f /var/log/php$PHPVERSION-fpm.log
