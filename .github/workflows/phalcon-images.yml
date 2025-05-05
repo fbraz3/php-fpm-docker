@@ -14,9 +14,23 @@ jobs:
         include:
           - php_version: '8.4'
             is_latest: true
+          - php_version: '8.3'
+            is_latest: false
           - php_version: '8.2'
             is_latest: false
+          - php_version: '8.1'
+            is_latest: false
+          - php_version: '8.0'
+            is_latest: false
+          - php_version: '7.4'
+            is_latest: false
           - php_version: '7.3'
+            is_latest: false
+          - php_version: '7.2'
+            is_latest: false
+          - php_version: '7.1'
+            is_latest: false
+          - php_version: '7.0'
             is_latest: false
           - php_version: '5.6'
             is_latest: false
@@ -37,22 +51,31 @@ jobs:
         with:
           platforms: linux/amd64
           context: .
-          file: flavors/vanilla/Dockerfile
+          file: flavors/phalcon/Dockerfile
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
+            BUILD_FLAVOR="-phalcon"
           tags: |
-            fbraz3/php-fpm:${{ matrix.php_version }}-amd64
+            fbraz3/php-fpm:${{ matrix.php_version }}-phalcon-amd64
 
-#      - name: Test images - amd64
-#        run: |
-#          docker run --rm --platform=linux/amd64 fbraz3/php-cli:${{ matrix.php_version }}-phalcon-amd64 -v | grep -q "${{ matrix.php_version }}" || exit 1
-#          docker run --rm --platform=linux/amd64 fbraz3/php-cli:${{ matrix.php_version }}-phalcon-amd64 -m
-#          docker run --rm --platform=linux/amd64 fbraz3/php-cli:${{ matrix.php_version }}-phalcon-amd64 -m | grep -q "phalcon" || exit 1
-#        env:
-#          PHP_VERSION: ${{ matrix.php_version }}
+      - name: Test images - amd64
+        run: |
+          docker run --platform=linux/amd64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-phalcon-amd64
+          sleep 35
+          docker exec -i test php -m |grep -q phalcon || exit 1
+          docker exec -i test ps faux |grep -q cron || exit 1
+          docker exec -i test ps faux |grep -q monit || exit 1
+          docker exec -i test ps faux |grep -q "php-fpm" || exit 1
+          nc -v 127.0.0.1 1780 || exit 1
+          docker exec -i test monit summary || exit 1
+          docker exec -i test crontab -l || exit 1
+          docker exec -i test ps faux
+          docker stop test
+        env:
+          PHP_VERSION: ${{ matrix.php_version }}
 
       # BUILD ARM64 IMAGE
       - name: Build PHP Base Image - arm64
@@ -60,22 +83,31 @@ jobs:
         with:
           platforms: linux/arm64
           context: .
-          file: flavors/vanilla/Dockerfile
+          file: flavors/phalcon/Dockerfile
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
+            BUILD_FLAVOR="-phalcon"
           tags: |
-            fbraz3/php-fpm:${{ matrix.php_version }}-arm64
+            fbraz3/php-fpm:${{ matrix.php_version }}-phalcon-arm64
 
-#      - name: Test images - arm64
-#        run: |
-#          docker run --rm --platform=linux/arm64 fbraz3/php-cli:${{ matrix.php_version }}-phalcon-arm64 -v | grep -q "${{ matrix.php_version }}" || exit 1
-#          docker run --rm --platform=linux/arm64 fbraz3/php-cli:${{ matrix.php_version }}-phalcon-arm64 -m
-#          docker run --rm --platform=linux/arm64 fbraz3/php-cli:${{ matrix.php_version }}-phalcon-arm64 -m | grep -q "phalcon" || exit 1
-#        env:
-#          PHP_VERSION: ${{ matrix.php_version }}
+      - name: Test images - arm64
+        run: |
+          docker run --platform=linux/arm64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-phalcon-arm64
+          sleep 35
+          docker exec -i test php -m |grep -q phalcon || exit 1
+          docker exec -i test ps faux |grep -q cron || exit 1
+          docker exec -i test ps faux |grep -q monit || exit 1
+          docker exec -i test ps faux |grep -q "php-fpm" || exit 1
+          nc -v 127.0.0.1 1780 || exit 1
+          docker exec -i test monit summary || exit 1
+          docker exec -i test crontab -l || exit 1
+          docker exec -i test ps faux
+          docker stop test
+        env:
+          PHP_VERSION: ${{ matrix.php_version }}
 
       # BUILD AND PUSH MULTI-ARCH IMAGE
       # Github Actions cache is used to speed up the build process and ensure that the tests are run on the latest image
@@ -90,12 +122,13 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           context: .
-          file: flavors/vanilla/Dockerfile
+          file: flavors/phalcon/Dockerfile
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
+            BUILD_FLAVOR="-phalcon"
           tags: |
             fbraz3/php-fpm:${{ matrix.php_version }}-alpha-phalcon
             ${{ matrix.is_latest && 'fbraz3/php-fpm:latest-alpha-phalcon' || '' }}
