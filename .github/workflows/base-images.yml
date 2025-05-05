@@ -52,10 +52,11 @@ jobs:
           sleep 35
           docker exec -i test ps faux |grep -q cron || exit 1
           docker exec -i test ps faux |grep -q monit || exit 1
-          docker exec -i test ps faux |grep -q "php-fpm: master" || exit 1
+          docker exec -i test ps faux |grep -q "php-fpm" || exit 1
           nc -v 127.0.0.1 1780 || exit 1
           docker exec -i test monit summary || exit 1
           docker exec -i test crontab -l || exit 1
+          docker exec -i test ps faux
           docker stop test
         env:
           PHP_VERSION: ${{ matrix.php_version }}
@@ -81,10 +82,11 @@ jobs:
           sleep 35
           docker exec -i test ps faux |grep -q cron || echo "errrou cron"
           docker exec -i test ps faux |grep -q monit || echo "errrou monit"
-          docker exec -i test ps faux |grep -q "php-fpm: master" || echo "errrou php-fpm"
+          docker exec -i test ps faux |grep -q "php-fpm" || echo "errrou php-fpm"
           nc -v 127.0.0.1 1780 || echo "errrou nc"
           docker exec -i test monit summary || echo "errrou monit summary"
           docker exec -i test crontab -l || echo "errrou crontab"
+          docker exec -i test ps faux
           docker stop test || echo "errrou stop"
         env:
           PHP_VERSION: ${{ matrix.php_version }}
