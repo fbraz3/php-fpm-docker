@@ -1,4 +1,4 @@
-name: Build Base Images
+name: Build Phalcon Images
 
 on:
   workflow_dispatch:
