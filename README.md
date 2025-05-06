@@ -4,11 +4,11 @@ A lightweight and multi-version PHP-FPM Docker image designed to integrate seaml
 
 This image is optimized for performance, security, and flexibility, making it ideal for production environments.
 
+For more technical information, please visit our  [DeepWiki Page](https://deepwiki.com/fbraz3/php-fpm-docker) (AI generated).
+
 ## Build Status
 
 [![Build Base Images](https://github.com/fbraz3/php-fpm-docker/actions/workflows/base-images.yml/badge.svg)](https://github.com/fbraz3/php-fpm-docker/actions/workflows/base-images.yml) [![Build Phalcon Images](https://github.com/fbraz3/php-fpm-docker/actions/workflows/phalcon-images.yml/badge.svg)](https://github.com/fbraz3/php-fpm-docker/actions/workflows/phalcon-images.yml)
-
-⚠️ Ask Devin AI about this project on [DeepWiki](https://deepwiki.com/fbraz3/php-fpm-docker).
 
 ## Tags
 Each image is tagged with the PHP version. For example:
