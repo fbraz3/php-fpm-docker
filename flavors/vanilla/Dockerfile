@@ -9,16 +9,6 @@ ARG BUILD_ARCH
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ENTRYPOINT_COMMAND="/usr/bin/tail -f /var/log/php$PHP_VERSION-fpm.log"
 
-# filter entrypoint to get only php-fpm stuff  | OK
-# copy entrypoint to /entrypoints folder       | OK
-# refactor dockerfile to use php-fpm image     | OK
-# add donation message at daemon starup        | OK
-# add code of conduct and contributing.md      | OK
-# Create gh actions for build and push         |
-# Define tests for each flavor                 |
-# Implement tests for each flavor              |
-# refactor README.md                           |
-
 COPY ../../assets/misc/cronfile.final /
 COPY ../../assets/misc/cronfile.system /
 COPY ../../assets/scripts/docker-entrypoint.sh /entrypoints/php-fpm-entrypoint.sh
