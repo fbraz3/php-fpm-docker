@@ -125,5 +125,5 @@ jobs:
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
           tags: |
-            fbraz3/php-fpm:${{ matrix.php_version }}-alpha
-            ${{ matrix.is_latest && 'fbraz3/php-fpm:latest-alpha' || '' }}
+            fbraz3/php-fpm:${{ matrix.php_version }}
+            ${{ matrix.is_latest && 'fbraz3/php-fpm:latest' || '' }}

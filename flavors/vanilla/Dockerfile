@@ -46,7 +46,6 @@ RUN chown -R www-data. /app; \
     chown www-data. /cronfile.final; \
     chown -R www-data. /var/run/php/; \
     chown -R www-data. /etc/monit/; \
-    chown -R www-data. /etc/php/$PHP_VERSION/fpm/pool.d/; \
     chown -R www-data. /etc/php/$PHP_VERSION/fpm/; \
     chown -R www-data. /etc/php/$PHP_VERSION/conf.d/; \
     chown -R www-data. /etc/php/$PHP_VERSION/mods-available/; \
@@ -68,6 +67,5 @@ RUN chmod gu+rw /var/run; \
     chmod gu+s /usr/sbin/cron;
 
 WORKDIR /app
-
 USER www-data
 ENTRYPOINT ["/docker-entrypoint.sh"]
