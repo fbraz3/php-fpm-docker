@@ -11,9 +11,9 @@ ENV ENTRYPOINT_COMMAND="/usr/bin/tail -f /var/log/php$PHP_VERSION-fpm.log"
 
 COPY ../../assets/misc/cronfile.final /
 COPY ../../assets/misc/cronfile.system /
-COPY ../../assets/scripts/docker-entrypoint.sh /entrypoints/php-fpm-entrypoint.sh
+COPY ../../assets/scripts/docker-entrypoint.sh /entrypoints/1-php-fpm-entrypoint.sh
 
-RUN chmod +x /entrypoints/php-fpm-entrypoint.sh; \
+RUN chmod +x /entrypoints/1-php-fpm-entrypoint.sh; \
     mkdir /app; \
     mkdir /run/php/; \
     mkdir -p /app/public;
