@@ -2,8 +2,8 @@ name: Build Phalcon Images
 
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: '15 6 * * 5'
+  schedule:
+    - cron: '15 6 * * 5'
 
 jobs:
   build_images:
