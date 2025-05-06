@@ -130,5 +130,5 @@ jobs:
             PHP_VERSION=${{ matrix.php_version }}
             BUILD_FLAVOR=-phalcon
           tags: |
-            fbraz3/php-fpm:${{ matrix.php_version }}-alpha-phalcon
-            ${{ matrix.is_latest && 'fbraz3/php-fpm:latest-alpha-phalcon' || '' }}
+            fbraz3/php-fpm:${{ matrix.php_version }}-phalcon
+            ${{ matrix.is_latest && 'fbraz3/php-fpm:latest-phalcon' || '' }}
