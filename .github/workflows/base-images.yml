@@ -1,35 +1,129 @@
-name: Boilerplate for a new test Branch - base images
+name: Build Base Images
 
 on:
   workflow_dispatch:
+#  schedule:
+#    - cron: '0 6 * * 5'
 
 jobs:
-  docker:
+  build_images:
     runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        include:
+          - php_version: '8.4'
+            is_latest: true
+          - php_version: '8.3'
+            is_latest: false
+          - php_version: '8.2'
+            is_latest: false
+          - php_version: '8.1'
+            is_latest: false
+          - php_version: '8.0'
+            is_latest: false
+          - php_version: '7.4'
+            is_latest: false
+          - php_version: '7.3'
+            is_latest: false
+          - php_version: '7.2'
+            is_latest: false
+          - php_version: '7.1'
+            is_latest: false
+          - php_version: '7.0'
+            is_latest: false
+          - php_version: '5.6'
+            is_latest: false
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
+      # BUILD AMD64 IMAGE
+      - name: Build PHP Base Image - amd64
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64
+          context: .
+          file: flavors/vanilla/Dockerfile
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            PHP_VERSION=${{ matrix.php_version }}
+          tags: |
+            fbraz3/php-fpm:${{ matrix.php_version }}-amd64
+
+      - name: Test images - amd64
+        run: |
+          docker run --platform=linux/amd64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-amd64
+          sleep 35
+          docker exec -i test ps faux |grep -q cron || exit 1
+          docker exec -i test ps faux |grep -q monit || exit 1
+          docker exec -i test ps faux |grep -q "php-fpm" || exit 1
+          nc -v 127.0.0.1 1780 || exit 1
+          docker exec -i test monit summary || exit 1
+          docker exec -i test crontab -l || exit 1
+          docker exec -i test ps faux
+          docker stop test
+        env:
+          PHP_VERSION: ${{ matrix.php_version }}
+
+      # BUILD ARM64 IMAGE
+      - name: Build PHP Base Image - arm64
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/arm64
+          context: .
+          file: flavors/vanilla/Dockerfile
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            PHP_VERSION=${{ matrix.php_version }}
+          tags: |
+            fbraz3/php-fpm:${{ matrix.php_version }}-arm64
+
+      - name: Test images - arm64
+        run: |
+          docker run --platform=linux/arm64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-arm64
+          sleep 35
+          docker exec -i test ps faux |grep -q cron || exit 1
+          docker exec -i test ps faux |grep -q monit || exit 1
+          docker exec -i test ps faux |grep -q "php-fpm" || exit 1
+          nc -v 127.0.0.1 1780 || exit 1
+          docker exec -i test monit summary || exit 1
+          docker exec -i test crontab -l || exit 1
+          docker exec -i test ps faux
+          docker stop test
+        env:
+          PHP_VERSION: ${{ matrix.php_version }}
+
+      # BUILD AND PUSH MULTI-ARCH IMAGE
+      # Github Actions cache is used to speed up the build process and ensure that the tests are run on the latest image
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
+      - name: Build and Push PHP Base Images
+        uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
           context: .
+          file: flavors/vanilla/Dockerfile
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
-            PHP_VERSION=8.3
+            PHP_VERSION=${{ matrix.php_version }}
           tags: |
-            fbraz3/php-fpm:latest
-            fbraz3/php-fpm:8.3
+            fbraz3/php-fpm:${{ matrix.php_version }}-alpha
+            ${{ matrix.is_latest && 'fbraz3/php-fpm:latest-alpha' || '' }}

@@ -1,78 +1,78 @@
-# PHP-FPM Docker
+# Braz PHP-FPM Docker
 
-A multi-version php-fpm images listening on TCP port to easy integrate on webservers like nginx or httpd.
+A lightweight and multi-version PHP-FPM Docker image designed to integrate seamlessly with web servers like Nginx or Apache HTTP Server.
 
-## Features
- - *Multi Version:* All supported PHP versions available
- - *Fast!* does not come with a builtin webserver, so less overhead and better response times! =D
- - *Up-to-Date:* Images auto-updated every week
- - *Secure:* Cron job auto installed into containers to apply security updates every night;
- - *Green light to send emails:* PHP mail() working like a charm;
- - *Schedule jobs:* cron command installed;
+This image is optimized for performance, security, and flexibility, making it ideal for production environments.
 
-## Ready-to-go images
-Check out on [Docker Hub](https://hub.docker.com/r/fbraz3/php-fpm/)
+## Build Status
 
-Source code on [GitHub](https://github.com/fbraz3/php-fpm-docker)
+[![Build Base Images](https://github.com/fbraz3/php-fpm-docker/actions/workflows/base-images.yml/badge.svg)](https://github.com/fbraz3/php-fpm-docker/actions/workflows/base-images.yml) [![Build Phalcon Images](https://github.com/fbraz3/php-fpm-docker/actions/workflows/phalcon-images.yml/badge.svg)](https://github.com/fbraz3/php-fpm-docker/actions/workflows/phalcon-images.yml)
 
-## Getting started
+⚠️ Ask Devin AI about this project on [DeepWiki](https://deepwiki.com/fbraz3/php-fpm-docker).
 
-First of all, create a network called `dockernet` using range `192.168.0.0/24` to get emails working over ssmtp email proxy.
-```
-# docker network create --subnet=192.168.0.0/24 dockernet
-```
-edit `/etc/postfix/main.cf` and add 192.168.0.0/24 on `mynetworks` params.
-```
-mynetworks = 127.0.0.0/8 192.168.0.0/24 [::ffff:127.0.0.0]/104 [::1]/128
-```
-Restart postfix
-```
-systemctl restart postfix
-```
+## Tags
+Each image is tagged with the PHP version. For example:
+- `fbraz3/php-fpm:8.4` for PHP 8.4
+- `fbraz3/php-fpm:8.4-phalcon` for PHP 8.4 with Phalcon extension 
 
-## Using this image
-Best using docker-compose to start this image.
+Check the available tags on `Docker Hub`: <https://hub.docker.com/r/fbraz3/php-fpm/tags>.
+
+## Flavors
+The image is available in different flavors to suit your needs:
+- **Vanilla**: A minimal PHP-FPM image with essential configurations.
+- **Phalcon**: An image with the Phalcon PHP framework pre-installed.
+
+## Manage PHP Directives via Environment Variables
+You can configure PHP directives dynamically using environment variables. The following prefixes are supported:
+- `PHPADMIN_`: Sets `php_admin_value` directives.
+- `PHPFLAG_`: Sets `php_flag` directives.
+- `FPMCONFIG_`: Configures PHP-FPM settings.
+- `POOLCONFIG_`: Configures PHP-FPM pool settings.
+
+Example:
 ```
-version: '2'
-services:
- php-fpm:
-  image: fbraz3/php-fpm:7.3
-  volumes:
-   - /my/app/root/:/app   
-  ports:
-    - "127.0.0.1:1780:1780"
-  extra_hosts:  
-      - "mail:192.168.0.1"
-  restart: always
-networks:
- dockernet:
-   external: true
+PHPADMIN_memory_limit: 256M
+PHPFLAG_display_errors: Off
+FPMCONFIG_pm_max_children: 10
+POOLCONFIG_listen: 127.0.0.1:9000
 ```
 
-**Note**: Dont forget to replace `/my/app/root/` to your real app root! 
+#### Useful Links
 
-## Configuring nginx
-We need to set fastcgi server to `tcp port 1780` like below
+- [PHP-FPM Configuration](https://www.php.net/manual/en/install.fpm.configuration.php)
+- [PHP-FPM Pool Configuration](https://www.php.net/manual/en/install.fpm.configuration.php#install.fpm.configuration.pools)
+- [PHP-FPM Environment Variables](https://www.php.net/manual/en/install.fpm.configuration.php#install.fpm.configuration.environment)
+- [PHP-FPM Admin Values](https://www.php.net/manual/en/install.fpm.configuration.php#install.fpm.configuration.admin)
+- [PHP-FPM Flags](https://www.php.net/manual/en/install.fpm.configuration.php#install.fpm.configuration.flags)
+
+## Cronjobs
+The system automatically installs cron jobs from the `/cronfile` file.
+
+To use it, bind your cron file to `/cronfile`:
 ```
-location ~ \.php$ {
-        include              fastcgi_params;
-        fastcgi_pass         127.0.0.1:1780;
-        fastcgi_index        index.php;
-        fastcgi_param        DOCUMENT_ROOT    /app/public;
-        fastcgi_param        SCRIPT_FILENAME  /app/public$fastcgi_script_name;
-    }
+volumes:
+- /path/to/your/cronfile:/cronfile
 ```
 
-## Cronjob
+## Sending Mails
+This image supports sending emails using the `mail()` function.
 
-System reads `/cronfile` file and installs using `cron`.
+For more details, refer to the [PHP Base Docker documentation](https://github.com/fbraz3/php-base-docker#sending-mails).
 
-To use it just add your commands to a single file and bind it to `/cronfile` as follows.
+## Contribution
+Contributions are welcome! Feel free to open issues or submit pull requests to improve the project.
 
-```
-  [...]
-     volumes:
-        - /my/app/root/:/app
-        - /my/cronfile:/cronfile
-  [...]
-```
+Please visit the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
+
+#### Useful links
+- [How to create a pull request](https://docs.github.com/pt/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+- [How to report an issue](https://docs.github.com/pt/issues/tracking-your-work-with-issues/creating-an-issue)
+
+## Donation
+I spend a lot of time and effort maintaining this project. If you find it useful, consider supporting me with a donation:
+- [GitHub Sponsor](https://github.com/sponsors/fbraz3)
+- [Patreon](https://www.patreon.com/fbraz3)
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE), so you can use it for personal and commercial projects. However, please note that the images are provided "as is" without any warranty or guarantee of any kind. Use them at your own risk.
