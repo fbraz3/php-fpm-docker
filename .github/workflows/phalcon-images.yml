@@ -46,7 +46,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       # BUILD AMD64 IMAGE
-      - name: Build PHP Base Image - amd64
+      - name: Build PHP Phalcon Image - amd64
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64
@@ -78,7 +78,7 @@ jobs:
           PHP_VERSION: ${{ matrix.php_version }}
 
       # BUILD ARM64 IMAGE
-      - name: Build PHP Base Image - arm64
+      - name: Build PHP Phalcon Image - arm64
         uses: docker/build-push-action@v6
         with:
           platforms: linux/arm64
