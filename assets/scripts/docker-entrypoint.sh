@@ -101,5 +101,4 @@ done
 # START SERVICES
 /usr/sbin/service cron start
 /usr/sbin/service php$PHPVERSION-fpm start
-sleep 1
-/usr/sbin/service monit start
+RESTART_MONIT="true"
