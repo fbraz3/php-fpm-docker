@@ -32,6 +32,7 @@ COPY ../../assets/monit/monitrc /etc/monit/
 COPY ../../assets/monit/cron  /etc/monit/conf-enabled/
 COPY ../../assets/monit/php-fpm /etc/monit/conf-enabled/
 COPY ../../assets/php/www.conf /etc/php/$PHP_VERSION/fpm/pool.d/
+COPY ../../assets/php/www-socket.conf /etc/php/$PHP_VERSION/fpm/pool.d/
 COPY ../../assets/php/php-fpm.conf /etc/php/$PHP_VERSION/fpm/
 COPY ../../assets/php/php.ini /etc/php/$PHP_VERSION/fpm/
 COPY ../../assets/conf/env.conf /etc/php/$PHP_VERSION/fpm/
