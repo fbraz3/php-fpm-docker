@@ -64,7 +64,11 @@ jobs:
       - name: Test images - amd64
         run: |
           docker run --platform=linux/amd64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-phalcon-amd64
-          sleep 35
+          sleep 60
+          echo "-----------"
+          docker logs test
+          docker exec -i test ps faux
+          echo "-----------"
           docker exec -i test php -m |grep -q phalcon || exit 1
           docker exec -i test ps faux |grep -q cron || exit 1
           docker exec -i test ps faux |grep -q monit || exit 1
@@ -72,7 +76,6 @@ jobs:
           nc -v 127.0.0.1 1780 || exit 1
           docker exec -i test monit summary || exit 1
           docker exec -i test crontab -l || exit 1
-          docker exec -i test ps faux
           docker stop test
         env:
           PHP_VERSION: ${{ matrix.php_version }}
@@ -96,7 +99,11 @@ jobs:
       - name: Test images - arm64
         run: |
           docker run --platform=linux/arm64 --name test -p 1780:1780 -it --rm -d fbraz3/php-fpm:${{ matrix.php_version }}-phalcon-arm64
-          sleep 35
+          sleep 60
+          echo "-----------"
+          docker logs test
+          docker exec -i test ps faux
+          echo "-----------"
           docker exec -i test php -m |grep -q phalcon || exit 1
           docker exec -i test ps faux |grep -q cron || exit 1
           docker exec -i test ps faux |grep -q monit || exit 1
@@ -104,7 +111,6 @@ jobs:
           nc -v 127.0.0.1 1780 || exit 1
           docker exec -i test monit summary || exit 1
           docker exec -i test crontab -l || exit 1
-          docker exec -i test ps faux
           docker stop test
         env:
           PHP_VERSION: ${{ matrix.php_version }}
