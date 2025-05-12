@@ -4,6 +4,8 @@ A lightweight and multi-version PHP-FPM Docker image designed to integrate seaml
 
 This image is optimized for performance, security, and flexibility, making it ideal for production environments.
 
+We also provide an AI generated [DeepWiki Page](https://deepwiki.com/fbraz3/php-fpm-docker) with more technical information.
+
 💡 For a complete list of available images, please visit the [PHP System Docs](https://github.com/fbraz3/php-system-docs) page.
 
 ## Table of Contents
@@ -52,7 +54,6 @@ POOLCONFIG_listen: 127.0.0.1:9000
 
 #### Useful Links
 
-- [DeepWiki Page](https://deepwiki.com/fbraz3/php-fpm-docker) (AI generated DOCS).
 - [PHP-FPM Configuration](https://www.php.net/manual/en/install.fpm.configuration.php)
 - [PHP-FPM Pool Configuration](https://www.php.net/manual/en/install.fpm.configuration.php#install.fpm.configuration.pools)
 - [PHP-FPM Environment Variables](https://www.php.net/manual/en/install.fpm.configuration.php#install.fpm.configuration.environment)
