@@ -54,10 +54,12 @@ RUN chown -R www-data. /app; \
     touch /var/run/monit.pid; \
     touch /var/run/php$PHP_VERSION-fpm.pid; \
     touch /var/log/php$PHP_VERSION-fpm.log; \
+    touch /var/log/php-error.log; \
     chown www-data. /var/run/crond.pid; \
     chown www-data. /var/run/monit.pid; \
     chown www-data. /var/run/php$PHP_VERSION-fpm.pid; \
     chown www-data. /var/log/php$PHP_VERSION-fpm.log; \
+    chown www-data. /var/log/php-error.log; \
     chown www-data. /var/log/monit.log; \
     chown -R www-data. /var/lib/monit; \
     chown -R www-data. /var/www/
