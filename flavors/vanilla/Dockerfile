@@ -12,21 +12,22 @@ ENV ENTRYPOINT_COMMAND="/usr/bin/tail -f /var/log/php$PHP_VERSION-fpm.log"
 COPY ../../assets/misc/cronfile.final /
 COPY ../../assets/misc/cronfile.system /
 COPY ../../assets/scripts/docker-entrypoint.sh /entrypoints/1-php-fpm-entrypoint.sh
+COPY ../../assets/scripts/healthcheck.sh /healthcheck.sh
 
-RUN chmod +x /entrypoints/1-php-fpm-entrypoint.sh; \
+RUN chmod +x /entrypoints/1-php-fpm-entrypoint.sh /healthcheck.sh; \
     mkdir /app; \
     mkdir /run/php/; \
     mkdir -p /app/public;
 
 #ensure php repo is up-to-date
 RUN for i in {1..10}; do \
-      add-apt-repository -y ppa:ondrej/php && break || sleep 10; \
+    add-apt-repository -y ppa:ondrej/php && break || sleep 10; \
     done
 
-RUN /usr/bin/unattended-upgrades -v;
+RUN /usr/bin/unattended-upgrades -v
 
 # Install packages
-RUN apt-get -fy install php$PHP_VERSION-fpm monit cron;
+RUN apt-get update --allow-releaseinfo-change && apt-get -fy install php$PHP_VERSION-fpm monit cron;
 
 COPY ../../assets/monit/monitrc /etc/monit/
 COPY ../../assets/monit/cron  /etc/monit/conf-enabled/
@@ -71,4 +72,5 @@ RUN chmod gu+rw /var/run; \
 
 WORKDIR /app
 USER www-data
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 CMD /healthcheck.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
