@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         include:
           - php_version: '8.4'
@@ -54,7 +55,7 @@ jobs:
           file: flavors/vanilla/Dockerfile
           load: true
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
             BUILD_FLAVOR=-phalcon
@@ -89,7 +90,7 @@ jobs:
           file: flavors/vanilla/Dockerfile
           load: true
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
             BUILD_FLAVOR=-phalcon
@@ -131,7 +132,7 @@ jobs:
           file: flavors/vanilla/Dockerfile
           push: true
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
             BUILD_FLAVOR=-phalcon
