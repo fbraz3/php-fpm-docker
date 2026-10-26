@@ -24,7 +24,7 @@ RUN for i in {1..10}; do \
     add-apt-repository -y ppa:ondrej/php && break || sleep 10; \
     done
 
-RUN /usr/bin/unattended-upgrades -v
+RUN apt-get update && apt-get -yq dist-upgrade
 
 # Install packages
 RUN apt-get update --allow-releaseinfo-change && apt-get -fy install php$PHP_VERSION-fpm monit cron;
